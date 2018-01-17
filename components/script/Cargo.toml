@@ -34,7 +34,6 @@ app_units = "0.6"
 audio-video-metadata = "0.1.4"
 base64 = "0.6"
 bitflags = "1.0"
-bluetooth_traits = {path = "../bluetooth_traits"}
 byteorder = "1.0"
 canvas_traits = {path = "../canvas_traits"}
 caseless = "0.1.0"
@@ -70,7 +69,6 @@ msg = {path = "../msg"}
 net_traits = {path = "../net_traits"}
 nonzero = {path = "../nonzero"}
 num-traits = "0.1.32"
-offscreen_gl_context = { version = "0.14", features = ["serde"] }
 open = "1.1.1"
 parking_lot = "0.4"
 phf = "0.7.18"
@@ -101,7 +99,6 @@ utf-8 = "0.7"
 uuid = {version = "0.5", features = ["v4"]}
 xml5ever = {version = "0.12"}
 webrender_api = {git = "https://github.com/servo/webrender", features = ["ipc"]}
-webvr_traits = {path = "../webvr_traits"}
 
 [target.'cfg(not(target_os = "ios"))'.dependencies]
 angle = {git = "https://github.com/servo/angle", branch = "servo"}

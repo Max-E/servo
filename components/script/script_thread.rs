@@ -17,8 +17,6 @@
 //! a page runs its course and the script thread returns to processing events in the main event
 //! loop.
 
-use bluetooth_traits::BluetoothRequest;
-use canvas_traits::webgl::WebGLPipeline;
 use devtools;
 use devtools_traits::{DevtoolScriptControlMsg, DevtoolsPageInfo};
 use devtools_traits::{ScriptToDevtoolsControlMsg, WorkerId};
@@ -126,7 +124,6 @@ use url::Position;
 use url::percent_encoding::percent_decode;
 use webdriver_handlers;
 use webrender_api::DocumentId;
-use webvr_traits::{WebVREvent, WebVRMsg};
 
 pub type ImageCacheMsg = (PipelineId, PendingImageResponse);
 
@@ -409,8 +406,6 @@ pub struct ScriptThread {
     /// A handle to the resource thread. This is an `Arc` to avoid running out of file descriptors if
     /// there are many iframes.
     resource_threads: ResourceThreads,
-    /// A handle to the bluetooth thread.
-    bluetooth_thread: IpcSender<BluetoothRequest>,
 
     /// The port on which the script thread receives messages (load URL, exit, etc.)
     port: Receiver<MainThreadScriptMsg>,
@@ -484,12 +479,6 @@ pub struct ScriptThread {
 
     /// The unit of related similar-origin browsing contexts' list of MutationObserver objects
     mutation_observers: DomRefCell<Vec<Dom<MutationObserver>>>,
-
-    /// A handle to the webgl thread
-    webgl_chan: WebGLPipeline,
-
-    /// A handle to the webvr thread, if available
-    webvr_chan: Option<IpcSender<WebVRMsg>>,
 
     /// The worklet thread pool
     worklet_thread_pool: DomRefCell<Option<Rc<WorkletThreadPool>>>,
@@ -834,7 +823,6 @@ impl ScriptThread {
             image_cache_port: image_cache_port,
 
             resource_threads: state.resource_threads,
-            bluetooth_thread: state.bluetooth_thread,
 
             port: port,
 
@@ -874,9 +862,6 @@ impl ScriptThread {
             mutation_observers: Default::default(),
 
             layout_to_constellation_chan: state.layout_to_constellation_chan,
-
-            webgl_chan: state.webgl_chan,
-            webvr_chan: state.webvr_chan,
 
             worklet_thread_pool: Default::default(),
 
@@ -1181,7 +1166,6 @@ impl ScriptThread {
                     DispatchStorageEvent(id, ..) => Some(id),
                     ReportCSSError(id, ..) => Some(id),
                     Reload(id, ..) => Some(id),
-                    WebVREvents(id, ..) => Some(id),
                     PaintMetric(..) => None,
                 }
             },
@@ -1236,7 +1220,6 @@ impl ScriptThread {
                 ScriptThreadEventCategory::SetViewport => ProfilerCategory::ScriptSetViewport,
                 ScriptThreadEventCategory::TimerEvent => ProfilerCategory::ScriptTimerEvent,
                 ScriptThreadEventCategory::WebSocketEvent => ProfilerCategory::ScriptWebSocketEvent,
-                ScriptThreadEventCategory::WebVREvent => ProfilerCategory::ScriptWebVREvent,
                 ScriptThreadEventCategory::WorkerEvent => ProfilerCategory::ScriptWorkerEvent,
                 ScriptThreadEventCategory::WorkletEvent => ProfilerCategory::ScriptWorkletEvent,
                 ScriptThreadEventCategory::ServiceWorkerEvent => ProfilerCategory::ScriptServiceWorkerEvent,
@@ -1324,8 +1307,6 @@ impl ScriptThread {
                 self.handle_reload(pipeline_id),
             ConstellationControlMsg::ExitPipeline(pipeline_id, discard_browsing_context) =>
                 self.handle_exit_pipeline_msg(pipeline_id, discard_browsing_context),
-            ConstellationControlMsg::WebVREvents(pipeline_id, events) =>
-                self.handle_webvr_events(pipeline_id, events),
             ConstellationControlMsg::PaintMetric(pipeline_id, metric_type, metric_value) =>
                 self.handle_paint_metric(pipeline_id, metric_type, metric_value),
             msg @ ConstellationControlMsg::AttachLayout(..) |
@@ -2149,7 +2130,6 @@ impl ScriptThread {
             self.image_cache_channel.clone(),
             self.image_cache.clone(),
             self.resource_threads.clone(),
-            self.bluetooth_thread.clone(),
             self.mem_profiler_chan.clone(),
             self.time_profiler_chan.clone(),
             self.devtools_chan.clone(),
@@ -2164,8 +2144,6 @@ impl ScriptThread {
             origin,
             incomplete.navigation_start,
             incomplete.navigation_start_precise,
-            self.webgl_chan.channel(),
-            self.webvr_chan.clone(),
             self.microtask_queue.clone(),
             self.webrender_document,
         );
@@ -2653,14 +2631,6 @@ impl ScriptThread {
         let window = self.documents.borrow().find_window(pipeline_id);
         if let Some(window) = window {
             window.Location().reload_without_origin_check();
-        }
-    }
-
-    fn handle_webvr_events(&self, pipeline_id: PipelineId, events: Vec<WebVREvent>) {
-        let window = self.documents.borrow().find_window(pipeline_id);
-        if let Some(window) = window {
-            let vr = window.Navigator().Vr();
-            vr.handle_webvr_events(events);
         }
     }
 

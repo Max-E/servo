@@ -4,19 +4,15 @@
 
 use dom::bindings::codegen::Bindings::NavigatorBinding;
 use dom::bindings::codegen::Bindings::NavigatorBinding::NavigatorMethods;
-use dom::bindings::codegen::Bindings::VRBinding::VRBinding::VRMethods;
 use dom::bindings::reflector::{Reflector, DomObject, reflect_dom_object};
 use dom::bindings::root::{DomRoot, MutNullableDom};
 use dom::bindings::str::DOMString;
-use dom::bluetooth::Bluetooth;
-use dom::gamepadlist::GamepadList;
 use dom::mimetypearray::MimeTypeArray;
 use dom::navigatorinfo;
 use dom::permissions::Permissions;
 use dom::pluginarray::PluginArray;
 use dom::promise::Promise;
 use dom::serviceworkercontainer::ServiceWorkerContainer;
-use dom::vr::VR;
 use dom::window::Window;
 use dom_struct::dom_struct;
 use std::rc::Rc;
@@ -24,12 +20,9 @@ use std::rc::Rc;
 #[dom_struct]
 pub struct Navigator {
     reflector_: Reflector,
-    bluetooth: MutNullableDom<Bluetooth>,
     plugins: MutNullableDom<PluginArray>,
     mime_types: MutNullableDom<MimeTypeArray>,
     service_worker: MutNullableDom<ServiceWorkerContainer>,
-    vr: MutNullableDom<VR>,
-    gamepads: MutNullableDom<GamepadList>,
     permissions: MutNullableDom<Permissions>,
 }
 
@@ -37,12 +30,9 @@ impl Navigator {
     fn new_inherited() -> Navigator {
         Navigator {
             reflector_: Reflector::new(),
-            bluetooth: Default::default(),
             plugins: Default::default(),
             mime_types: Default::default(),
             service_worker: Default::default(),
-            vr: Default::default(),
-            gamepads: Default::default(),
             permissions: Default::default(),
         }
     }
@@ -90,11 +80,6 @@ impl NavigatorMethods for Navigator {
         navigatorinfo::AppVersion()
     }
 
-    // https://webbluetoothcg.github.io/web-bluetooth/#dom-navigator-bluetooth
-    fn Bluetooth(&self) -> DomRoot<Bluetooth> {
-        self.bluetooth.or_init(|| Bluetooth::new(&self.global()))
-    }
-
     // https://html.spec.whatwg.org/multipage/#navigatorlanguage
     fn Language(&self) -> DOMString {
         navigatorinfo::Language()
@@ -127,31 +112,11 @@ impl NavigatorMethods for Navigator {
         true
     }
 
-    // https://www.w3.org/TR/gamepad/#navigator-interface-extension
-    fn GetGamepads(&self) -> DomRoot<GamepadList> {
-        let root = self.gamepads.or_init(|| {
-            GamepadList::new(&self.global(), &[])
-        });
-
-        let vr_gamepads = self.Vr().get_gamepads();
-        root.add_if_not_exists(&vr_gamepads);
-        // TODO: Add not VR related gamepads
-        root
-    }
     // https://w3c.github.io/permissions/#navigator-and-workernavigator-extension
     fn Permissions(&self) -> DomRoot<Permissions> {
         self.permissions.or_init(|| Permissions::new(&self.global()))
     }
-
-    // https://w3c.github.io/webvr/spec/1.1/#navigator-getvrdisplays-attribute
-    #[allow(unrooted_must_root)]
-    fn GetVRDisplays(&self) -> Rc<Promise> {
-        self.Vr().GetDisplays()
-    }
 }
 
 impl Navigator {
-    pub fn Vr(&self) -> DomRoot<VR> {
-        self.vr.or_init(|| VR::new(&self.global()))
-    }
 }

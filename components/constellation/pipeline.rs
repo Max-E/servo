@@ -2,8 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-use bluetooth_traits::BluetoothRequest;
-use canvas_traits::webgl::WebGLPipeline;
 use compositing::CompositionPipeline;
 use compositing::CompositorProxy;
 use compositing::compositor_thread::Msg as CompositorMsg;
@@ -41,7 +39,6 @@ use std::sync::mpsc::Sender;
 use style_traits::CSSPixel;
 use style_traits::DevicePixel;
 use webrender_api;
-use webvr_traits::WebVRMsg;
 
 /// A `Pipeline` is the constellation's view of a `Document`. Each pipeline has an
 /// event loop (executed by a script thread) and a layout thread. A script thread
@@ -127,9 +124,6 @@ pub struct InitialPipelineState {
     /// A channel to the developer tools, if applicable.
     pub devtools_chan: Option<Sender<DevtoolsControlMsg>>,
 
-    /// A channel to the bluetooth thread.
-    pub bluetooth_thread: IpcSender<BluetoothRequest>,
-
     /// A channel to the service worker manager thread
     pub swmanager_thread: IpcSender<SWManagerMsg>,
 
@@ -172,12 +166,6 @@ pub struct InitialPipelineState {
 
     /// Whether this pipeline is considered private.
     pub is_private: bool,
-
-    /// A channel to the webgl thread.
-    pub webgl_chan: WebGLPipeline,
-
-    /// A channel to the webvr thread.
-    pub webvr_chan: Option<IpcSender<WebVRMsg>>,
 }
 
 impl Pipeline {
@@ -254,7 +242,6 @@ impl Pipeline {
                     script_to_constellation_chan: state.script_to_constellation_chan.clone(),
                     scheduler_chan: state.scheduler_chan,
                     devtools_chan: script_to_devtools_chan,
-                    bluetooth_thread: state.bluetooth_thread,
                     swmanager_thread: state.swmanager_thread,
                     font_cache_thread: state.font_cache_thread,
                     resource_threads: state.resource_threads,
@@ -275,8 +262,6 @@ impl Pipeline {
                     script_content_process_shutdown_port: script_content_process_shutdown_port,
                     webrender_api_sender: state.webrender_api_sender,
                     webrender_document: state.webrender_document,
-                    webgl_chan: state.webgl_chan,
-                    webvr_chan: state.webvr_chan,
                 };
 
                 // Spawn the child process.
@@ -456,7 +441,6 @@ pub struct UnprivilegedPipelineContent {
     layout_to_constellation_chan: IpcSender<LayoutMsg>,
     scheduler_chan: IpcSender<TimerSchedulerMsg>,
     devtools_chan: Option<IpcSender<ScriptToDevtoolsControlMsg>>,
-    bluetooth_thread: IpcSender<BluetoothRequest>,
     swmanager_thread: IpcSender<SWManagerMsg>,
     font_cache_thread: FontCacheThread,
     resource_threads: ResourceThreads,
@@ -476,8 +460,6 @@ pub struct UnprivilegedPipelineContent {
     script_content_process_shutdown_port: IpcReceiver<()>,
     webrender_api_sender: webrender_api::RenderApiSender,
     webrender_document: webrender_api::DocumentId,
-    webgl_chan: WebGLPipeline,
-    webvr_chan: Option<IpcSender<WebVRMsg>>,
 }
 
 impl UnprivilegedPipelineContent {
@@ -501,7 +483,6 @@ impl UnprivilegedPipelineContent {
             script_to_constellation_chan: self.script_to_constellation_chan.clone(),
             layout_to_constellation_chan: self.layout_to_constellation_chan.clone(),
             scheduler_chan: self.scheduler_chan,
-            bluetooth_thread: self.bluetooth_thread,
             resource_threads: self.resource_threads,
             image_cache: image_cache.clone(),
             time_profiler_chan: self.time_profiler_chan.clone(),
@@ -510,8 +491,6 @@ impl UnprivilegedPipelineContent {
             window_size: self.window_size,
             pipeline_namespace_id: self.pipeline_namespace_id,
             content_process_shutdown_chan: self.script_content_process_shutdown_chan,
-            webgl_chan: self.webgl_chan,
-            webvr_chan: self.webvr_chan,
             webrender_document: self.webrender_document,
         }, self.load_data.clone());
 

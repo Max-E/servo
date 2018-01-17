@@ -16,8 +16,6 @@ max_log_level = ["log/release_max_level_info"]
 webdriver = ["webdriver_server"]
 energy-profiling = ["profile_traits/energy-profiling"]
 debugmozjs = ["script/debugmozjs"]
-googlevr = ["webvr/googlevr"]
-oculusvr = ["webvr/oculusvr"]
 unstable = [
     "euclid/unstable",
     "gfx/unstable",
@@ -27,8 +25,6 @@ unstable = [
 ]
 
 [dependencies]
-bluetooth_traits = {path = "../bluetooth_traits"}
-bluetooth = {path = "../bluetooth"}
 canvas = {path = "../canvas"}
 canvas_traits = {path = "../canvas_traits"}
 compositing = {path = "../compositing"}
@@ -59,8 +55,6 @@ style_traits = {path = "../style_traits", features = ["servo"]}
 webrender = {git = "https://github.com/servo/webrender"}
 webrender_api = {git = "https://github.com/servo/webrender", features = ["ipc"]}
 webdriver_server = {path = "../webdriver_server", optional = true}
-webvr = {path = "../webvr"}
-webvr_traits = {path = "../webvr_traits"}
 
 [target.'cfg(all(not(target_os = "windows"), not(target_os = "ios")))'.dependencies]
 gaol = {git = "https://github.com/servo/gaol"}

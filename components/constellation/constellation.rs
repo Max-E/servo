@@ -94,11 +94,9 @@
 //! See https://github.com/servo/servo/issues/14704
 
 use backtrace::Backtrace;
-use bluetooth_traits::BluetoothRequest;
 use browsingcontext::{BrowsingContext, SessionHistoryChange, SessionHistoryEntry};
 use browsingcontext::{FullyActiveBrowsingContextsIterator, AllBrowsingContextsIterator};
 use canvas::canvas_paint_thread::CanvasPaintThread;
-use canvas::webgl_thread::WebGLThreads;
 use canvas_traits::canvas::CanvasMsg;
 use clipboard::{ClipboardContext, ClipboardProvider};
 use compositing::SendableFrameTree;
@@ -158,7 +156,6 @@ use style_traits::cursor::Cursor;
 use style_traits::viewport::ViewportConstraints;
 use timer_scheduler::TimerScheduler;
 use webrender_api;
-use webvr_traits::{WebVREvent, WebVRMsg};
 
 /// The `Constellation` itself. In the servo browser, there is one
 /// constellation, which maintains all of the browser global data.
@@ -232,10 +229,6 @@ pub struct Constellation<Message, LTF, STF> {
     /// A channel for the constellation to send messages to the
     /// devtools thread.
     devtools_chan: Option<Sender<DevtoolsControlMsg>>,
-
-    /// An IPC channel for the constellation to send messages to the
-    /// bluetooth thread.
-    bluetooth_thread: IpcSender<BluetoothRequest>,
 
     /// An IPC channel for the constellation to send messages to the
     /// Service Worker Manager thread.
@@ -329,12 +322,6 @@ pub struct Constellation<Message, LTF, STF> {
 
     /// Phantom data that keeps the Rust type system happy.
     phantom: PhantomData<(Message, LTF, STF)>,
-
-    /// Entry point to create and get channels to a WebGLThread.
-    webgl_threads: WebGLThreads,
-
-    /// A channel through which messages can be sent to the webvr thread.
-    webvr_chan: Option<IpcSender<WebVRMsg>>,
 }
 
 /// State needed to construct a constellation.
@@ -350,9 +337,6 @@ pub struct InitialConstellationState {
 
     /// A channel to the developer tools, if applicable.
     pub devtools_chan: Option<Sender<DevtoolsControlMsg>>,
-
-    /// A channel to the bluetooth thread.
-    pub bluetooth_thread: IpcSender<BluetoothRequest>,
 
     /// A channel to the font cache thread.
     pub font_cache_thread: FontCacheThread,
@@ -374,12 +358,6 @@ pub struct InitialConstellationState {
 
     /// Webrender API.
     pub webrender_api_sender: webrender_api::RenderApiSender,
-
-    /// Entry point to create and get channels to a WebGLThread.
-    pub webgl_threads: WebGLThreads,
-
-    /// A channel to the webgl thread.
-    pub webvr_chan: Option<IpcSender<WebVRMsg>>,
 
     /// Whether the constellation supports the clipboard.
     /// TODO: this field is not used, remove it?
@@ -578,7 +556,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
                 active_browser_id: None,
                 debugger_chan: state.debugger_chan,
                 devtools_chan: state.devtools_chan,
-                bluetooth_thread: state.bluetooth_thread,
                 public_resource_threads: state.public_resource_threads,
                 private_resource_threads: state.private_resource_threads,
                 font_cache_thread: state.font_cache_thread,
@@ -626,8 +603,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
                     info!("Using seed {} for random pipeline closure.", seed);
                     (rng, prob)
                 }),
-                webgl_threads: state.webgl_threads,
-                webvr_chan: state.webvr_chan,
             };
 
             constellation.run();
@@ -731,7 +706,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
             scheduler_chan: self.scheduler_chan.clone(),
             compositor_proxy: self.compositor_proxy.clone(),
             devtools_chan: self.devtools_chan.clone(),
-            bluetooth_thread: self.bluetooth_thread.clone(),
             swmanager_thread: self.swmanager_sender.clone(),
             font_cache_thread: self.font_cache_thread.clone(),
             resource_threads,
@@ -746,8 +720,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
             webrender_api_sender: self.webrender_api_sender.clone(),
             webrender_document: self.webrender_document,
             is_private,
-            webgl_chan: self.webgl_threads.pipeline(),
-            webvr_chan: self.webvr_chan.clone()
         });
 
         let pipeline = match result {
@@ -1079,10 +1051,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
             }
             FromCompositorMsg::LogEntry(top_level_browsing_context_id, thread_name, entry) => {
                 self.handle_log_entry(top_level_browsing_context_id, thread_name, entry);
-            }
-            FromCompositorMsg::WebVREvents(pipeline_ids, events) => {
-                debug!("constellation got {:?} WebVR events", events.len());
-                self.handle_webvr_events(pipeline_ids, events);
             }
             FromCompositorMsg::ForwardEvent(destination_pipeline_id, event) => {
                 self.forward_event(destination_pipeline_id, event);
@@ -1441,27 +1409,10 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
             warn!("Exit storage thread failed ({})", e);
         }
 
-        debug!("Exiting bluetooth thread.");
-        if let Err(e) = self.bluetooth_thread.send(BluetoothRequest::Exit) {
-            warn!("Exit bluetooth thread failed ({})", e);
-        }
-
         debug!("Exiting service worker manager thread.");
         if let Some(mgr) = self.swmanager_chan.as_ref() {
             if let Err(e) = mgr.send(ServiceWorkerMsg::Exit) {
                 warn!("Exit service worker manager failed ({})", e);
-            }
-        }
-
-        debug!("Exiting WebGL thread.");
-        if let Err(e) = self.webgl_threads.exit() {
-            warn!("Exit WebGL Thread failed ({})", e);
-        }
-
-        if let Some(chan) = self.webvr_chan.as_ref() {
-            debug!("Exiting WebVR thread.");
-            if let Err(e) = chan.send(WebVRMsg::Exit) {
-                warn!("Exit WebVR thread failed ({})", e);
             }
         }
 
@@ -1589,18 +1540,6 @@ impl<Message, LTF, STF> Constellation<Message, LTF, STF>
                 }
                 self.handled_warnings.push_back((thread_name, reason));
             },
-        }
-    }
-
-    fn handle_webvr_events(&mut self, ids: Vec<PipelineId>, events: Vec<WebVREvent>) {
-        for id in ids {
-            match self.pipelines.get_mut(&id) {
-                Some(ref pipeline) => {
-                    // Notify script thread
-                    let _ = pipeline.event_loop.send(ConstellationControlMsg::WebVREvents(id, events.clone()));
-                },
-                None => warn!("constellation got webvr event for dead pipeline")
-            }
         }
     }
 

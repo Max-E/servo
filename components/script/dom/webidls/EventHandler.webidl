@@ -114,17 +114,6 @@ interface WindowEventHandlers {
            attribute EventHandler onunload;
 };
 
-// https://w3c.github.io/webvr/spec/1.1/#interface-window
-partial interface WindowEventHandlers {
-           attribute EventHandler onvrdisplayconnect;
-           attribute EventHandler onvrdisplaydisconnect;
-           attribute EventHandler onvrdisplayactivate;
-           attribute EventHandler onvrdisplaydeactivate;
-           attribute EventHandler onvrdisplayblur;
-           attribute EventHandler onvrdisplayfocus;
-           attribute EventHandler onvrdisplaypresentchange;
-};
-
 // https://html.spec.whatwg.org/multipage/#documentandelementeventhandlers
 [NoInterfaceObject, Exposed=Window]
 interface DocumentAndElementEventHandlers {

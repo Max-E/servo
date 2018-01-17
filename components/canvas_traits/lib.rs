@@ -14,11 +14,8 @@ extern crate ipc_channel;
 extern crate malloc_size_of;
 #[macro_use] extern crate malloc_size_of_derive;
 extern crate nonzero;
-extern crate offscreen_gl_context;
 #[macro_use] extern crate serde;
 extern crate servo_config;
 extern crate webrender_api;
 
 pub mod canvas;
-pub mod webgl;
-mod webgl_channel;

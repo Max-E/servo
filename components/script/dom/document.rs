@@ -85,7 +85,6 @@ use dom::touchlist::TouchList;
 use dom::treewalker::TreeWalker;
 use dom::uievent::UIEvent;
 use dom::virtualmethods::vtable_for;
-use dom::webglcontextevent::WebGLContextEvent;
 use dom::window::{ReflowReason, Window};
 use dom::windowproxy::WindowProxy;
 use dom_struct::dom_struct;
@@ -3134,8 +3133,6 @@ impl DocumentMethods for Document {
                 )),
             "uievent" | "uievents" =>
                 Ok(DomRoot::upcast(UIEvent::new_uninitialized(&self.window))),
-            "webglcontextevent" =>
-                Ok(DomRoot::upcast(WebGLContextEvent::new_uninitialized(&self.window))),
             _ =>
                 Err(Error::NotSupported),
         }

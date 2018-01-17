@@ -27,7 +27,6 @@ extern crate audio_video_metadata;
 extern crate base64;
 #[macro_use]
 extern crate bitflags;
-extern crate bluetooth_traits;
 extern crate byteorder;
 extern crate canvas_traits;
 extern crate caseless;
@@ -45,8 +44,6 @@ extern crate fnv;
 #[allow(unused_extern_crates)]
 #[cfg(all(any(target_os = "macos", target_os = "linux"), not(any(target_arch = "arm", target_arch = "aarch64"))))]
 extern crate gecko_media;
-extern crate gleam;
-extern crate half;
 #[macro_use] extern crate html5ever;
 #[macro_use]
 extern crate hyper;
@@ -73,7 +70,6 @@ extern crate msg;
 extern crate net_traits;
 extern crate nonzero;
 extern crate num_traits;
-extern crate offscreen_gl_context;
 extern crate open;
 extern crate parking_lot;
 extern crate phf;
@@ -106,7 +102,6 @@ extern crate url;
 extern crate utf8;
 extern crate uuid;
 extern crate webrender_api;
-extern crate webvr_traits;
 extern crate xml5ever;
 
 #[macro_use]

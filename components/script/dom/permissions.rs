@@ -8,8 +8,6 @@ use dom::bindings::codegen::Bindings::PermissionsBinding::{self, PermissionsMeth
 use dom::bindings::error::Error;
 use dom::bindings::reflector::{DomObject, Reflector, reflect_dom_object};
 use dom::bindings::root::DomRoot;
-use dom::bluetooth::Bluetooth;
-use dom::bluetoothpermissionresult::BluetoothPermissionResult;
 use dom::globalscope::GlobalScope;
 use dom::permissionstatus::PermissionStatus;
 use dom::promise::Promise;
@@ -99,38 +97,6 @@ impl Permissions {
 
         // (Query, Request, Revoke) Step 2.
         match root_desc.name {
-            PermissionName::Bluetooth => {
-                let bluetooth_desc = match Bluetooth::create_descriptor(cx, permissionDesc) {
-                    Ok(descriptor) => descriptor,
-                    Err(error) => {
-                        p.reject_error(error);
-                        return p;
-                    },
-                };
-
-                // (Query, Request) Step 5.
-                let result = BluetoothPermissionResult::new(&self.global(), &status);
-
-                match &op {
-                    // (Request) Step 6 - 8.
-                    &Operation::Request => Bluetooth::permission_request(cx, &p, &bluetooth_desc, &result),
-
-                    // (Query) Step 6 - 7.
-                    &Operation::Query => Bluetooth::permission_query(cx, &p, &bluetooth_desc, &result),
-
-                    &Operation::Revoke => {
-                        // (Revoke) Step 3.
-                        let globalscope = self.global();
-                        globalscope.as_window()
-                                   .permission_state_invocation_results()
-                                   .borrow_mut()
-                                   .remove(&root_desc.name.to_string());
-
-                        // (Revoke) Step 4.
-                        Bluetooth::permission_revoke(&bluetooth_desc, &result)
-                    },
-                }
-            },
             _ => {
                 match &op {
                     &Operation::Request => {
@@ -349,8 +315,6 @@ fn allowed_in_nonsecure_contexts(permission_name: &PermissionName) -> bool {
         PermissionName::Device_info => false,
         // https://w3c.github.io/permissions/#dom-permissionname-background-sync
         PermissionName::Background_sync => false,
-        // https://webbluetoothcg.github.io/web-bluetooth/#dom-permissionname-bluetooth
-        PermissionName::Bluetooth => false,
         // https://storage.spec.whatwg.org/#dom-permissionname-persistent-storage
         PermissionName::Persistent_storage => false,
     }

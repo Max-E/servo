@@ -24,7 +24,6 @@ enum PermissionName {
   "speaker",
   "device-info",
   "background-sync",
-  "bluetooth",
   "persistent-storage",
 };
 

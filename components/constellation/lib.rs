@@ -7,7 +7,6 @@
 #![feature(mpsc_select)]
 
 extern crate backtrace;
-extern crate bluetooth_traits;
 extern crate canvas;
 extern crate canvas_traits;
 extern crate clipboard;
@@ -40,7 +39,6 @@ extern crate servo_remutex;
 extern crate servo_url;
 extern crate style_traits;
 extern crate webrender_api;
-extern crate webvr_traits;
 
 mod browsingcontext;
 mod constellation;

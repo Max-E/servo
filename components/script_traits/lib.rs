@@ -9,7 +9,6 @@
 #![deny(missing_docs)]
 #![deny(unsafe_code)]
 
-extern crate bluetooth_traits;
 extern crate canvas_traits;
 extern crate cookie as cookie_rs;
 extern crate devtools_traits;
@@ -33,13 +32,10 @@ extern crate servo_url;
 extern crate style_traits;
 extern crate time;
 extern crate webrender_api;
-extern crate webvr_traits;
 
 mod script_msg;
 pub mod webdriver_msg;
 
-use bluetooth_traits::BluetoothRequest;
-use canvas_traits::webgl::WebGLPipeline;
 use devtools_traits::{DevtoolScriptControlMsg, ScriptToDevtoolsControlMsg, WorkerId};
 use euclid::{Size2D, Length, Point2D, Vector2D, Rect, TypedScale, TypedSize2D};
 use gfx_traits::Epoch;
@@ -71,7 +67,6 @@ use style_traits::SpeculativePainter;
 use style_traits::cursor::Cursor;
 use webdriver_msg::{LoadStatus, WebDriverScriptCommand};
 use webrender_api::{ClipId, DevicePixel, DocumentId, ImageKey};
-use webvr_traits::{WebVREvent, WebVRMsg};
 
 pub use script_msg::{LayoutMsg, ScriptMsg, EventResult, LogEntry};
 pub use script_msg::{ServiceWorkerMsg, ScopeThings, SWManagerMsg, SWManagerSenders, DOMMessage};
@@ -321,8 +316,6 @@ pub enum ConstellationControlMsg {
     ReportCSSError(PipelineId, String, u32, u32, String),
     /// Reload the given page.
     Reload(PipelineId),
-    /// Notifies the script thread of WebVR events.
-    WebVREvents(PipelineId, Vec<WebVREvent>),
     /// Notifies the script thread about a new recorded paint metric.
     PaintMetric(PipelineId, ProgressiveWebMetricType, u64),
 }
@@ -357,7 +350,6 @@ impl fmt::Debug for ConstellationControlMsg {
             DispatchStorageEvent(..) => "DispatchStorageEvent",
             ReportCSSError(..) => "ReportCSSError",
             Reload(..) => "Reload",
-            WebVREvents(..) => "WebVREvents",
             PaintMetric(..) => "PaintMetric",
         };
         write!(formatter, "ConstellationMsg::{}", variant)
@@ -541,8 +533,6 @@ pub struct InitialScriptState {
     pub scheduler_chan: IpcSender<TimerSchedulerMsg>,
     /// A channel to the resource manager thread.
     pub resource_threads: ResourceThreads,
-    /// A channel to the bluetooth thread.
-    pub bluetooth_thread: IpcSender<BluetoothRequest>,
     /// The image cache for this script thread.
     pub image_cache: Arc<ImageCache>,
     /// A channel to the time profiler thread.
@@ -557,10 +547,6 @@ pub struct InitialScriptState {
     pub pipeline_namespace_id: PipelineNamespaceId,
     /// A ping will be sent on this channel once the script thread shuts down.
     pub content_process_shutdown_chan: IpcSender<()>,
-    /// A channel to the webgl thread used in this pipeline.
-    pub webgl_chan: WebGLPipeline,
-    /// A channel to the webvr thread, if available.
-    pub webvr_chan: Option<IpcSender<WebVRMsg>>,
     /// The Webrender document ID associated with this thread.
     pub webrender_document: DocumentId,
 }
@@ -796,8 +782,6 @@ pub enum ConstellationMsg {
     Reload(TopLevelBrowsingContextId),
     /// A log entry, with the top-level browsing context id and thread name
     LogEntry(Option<TopLevelBrowsingContextId>, Option<String>, LogEntry),
-    /// Dispatch WebVR events to the subscribed script threads.
-    WebVREvents(Vec<PipelineId>, Vec<WebVREvent>),
     /// Create a new top level browsing context.
     NewBrowser(ServoUrl, IpcSender<TopLevelBrowsingContextId>),
     /// Close a top level browsing context.
