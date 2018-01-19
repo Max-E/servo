@@ -27,8 +27,6 @@ use html5ever::{LocalName, Prefix};
 use image::ColorType;
 use image::png::PNGEncoder;
 use ipc_channel::ipc;
-use js::error::throw_type_error;
-use js::jsapi::{HandleValue, JSContext};
 use script_layout_interface::{HTMLCanvasData, HTMLCanvasDataSource};
 use std::iter::repeat;
 use style::attr::{AttrValue, LengthOrPercentageOrAuto};

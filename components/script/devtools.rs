@@ -22,8 +22,6 @@ use dom::globalscope::GlobalScope;
 use dom::node::{Node, window_from_node};
 use dom::window::Window;
 use ipc_channel::ipc::IpcSender;
-use js::jsapi::{JSAutoCompartment, ObjectClassName};
-use js::jsval::UndefinedValue;
 use msg::constellation_msg::PipelineId;
 use script_thread::Documents;
 use std::ffi::CStr;

@@ -15,7 +15,6 @@ use dom::location::Location;
 use dom::node::Node;
 use dom::window::Window;
 use dom_struct::dom_struct;
-use js::jsapi::JSContext;
 use script_traits::DocumentActivity;
 use servo_url::{MutableOrigin, ServoUrl};
 

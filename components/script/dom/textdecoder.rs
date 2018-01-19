@@ -11,7 +11,6 @@ use dom::bindings::str::{DOMString, USVString};
 use dom::globalscope::GlobalScope;
 use dom_struct::dom_struct;
 use encoding_rs::Encoding;
-use js::jsapi::{JSContext, JSObject};
 use std::borrow::ToOwned;
 
 #[dom_struct]

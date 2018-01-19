@@ -14,8 +14,6 @@ use dom::globalscope::GlobalScope;
 use dom::windowproxy::WindowProxy;
 use dom_struct::dom_struct;
 use ipc_channel::ipc;
-use js::jsapi::{JSContext, HandleValue};
-use js::jsval::{JSVal, UndefinedValue};
 use msg::constellation_msg::PipelineId;
 use script_traits::ScriptMsg;
 use servo_url::ImmutableOrigin;

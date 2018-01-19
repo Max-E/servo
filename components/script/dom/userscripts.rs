@@ -6,7 +6,6 @@ use dom::bindings::inheritance::Castable;
 use dom::globalscope::GlobalScope;
 use dom::htmlheadelement::HTMLHeadElement;
 use dom::node::Node;
-use js::jsval::UndefinedValue;
 use servo_config::opts;
 use servo_config::resource_files::resources_dir_path;
 use std::fs::{File, read_dir};

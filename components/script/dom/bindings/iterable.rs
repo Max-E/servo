@@ -15,9 +15,6 @@ use dom::bindings::root::{Dom, DomRoot};
 use dom::bindings::trace::JSTraceable;
 use dom::globalscope::GlobalScope;
 use dom_struct::dom_struct;
-use js::conversions::ToJSValConvertible;
-use js::jsapi::{HandleValue, Heap, JSContext, MutableHandleObject, JSObject};
-use js::jsval::UndefinedValue;
 use std::cell::Cell;
 use std::ptr;
 

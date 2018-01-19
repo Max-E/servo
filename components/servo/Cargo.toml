@@ -15,7 +15,6 @@ crate-type = ["rlib"]
 max_log_level = ["log/release_max_level_info"]
 webdriver = ["webdriver_server"]
 energy-profiling = ["profile_traits/energy-profiling"]
-debugmozjs = ["script/debugmozjs"]
 unstable = [
     "euclid/unstable",
     "gfx/unstable",

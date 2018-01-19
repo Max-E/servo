@@ -38,8 +38,6 @@ use dom::windowproxy::WindowProxy;
 use dom_struct::dom_struct;
 use html5ever::{LocalName, Prefix};
 use ipc_channel::ipc;
-use js::jsapi::{JSAutoCompartment, JSContext, MutableHandleValue};
-use js::jsval::{NullValue, UndefinedValue};
 use msg::constellation_msg::{FrameType, BrowsingContextId, PipelineId, TopLevelBrowsingContextId, TraversalDirection};
 use net_traits::response::HttpsState;
 use script_layout_interface::message::ReflowGoal;

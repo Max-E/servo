@@ -79,7 +79,6 @@ use dom::htmlunknownelement::HTMLUnknownElement;
 use dom::htmlvideoelement::HTMLVideoElement;
 use dom::svgsvgelement::SVGSVGElement;
 use html5ever::{LocalName, Prefix, QualName};
-use js::jsapi::JSAutoCompartment;
 use script_thread::ScriptThread;
 use servo_config::prefs::PREFS;
 

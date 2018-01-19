@@ -11,7 +11,6 @@ use dom::worklet::WorkletExecutor;
 use dom::workletglobalscope::WorkletGlobalScope;
 use dom::workletglobalscope::WorkletGlobalScopeInit;
 use dom_struct::dom_struct;
-use js::rust::Runtime;
 use msg::constellation_msg::PipelineId;
 use servo_url::ServoUrl;
 use std::collections::HashMap;

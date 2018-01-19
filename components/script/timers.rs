@@ -14,8 +14,6 @@ use dom::testbinding::TestBindingCallback;
 use dom::xmlhttprequest::XHRTimeoutCallback;
 use euclid::Length;
 use ipc_channel::ipc::IpcSender;
-use js::jsapi::{HandleValue, Heap};
-use js::jsval::{JSVal, UndefinedValue};
 use script_traits::{MsDuration, precise_time_ms};
 use script_traits::{TimerEvent, TimerEventId, TimerEventRequest};
 use script_traits::{TimerSchedulerMsg, TimerSource};

@@ -34,8 +34,6 @@ use dom::virtualmethods::VirtualMethods;
 use dom::window::Window;
 use dom_struct::dom_struct;
 use fnv::FnvHasher;
-use js::jsapi::{CompileFunction, JS_GetFunctionObject, JSAutoCompartment, JSFunction};
-use js::rust::{AutoObjectVectorWrapper, CompileOptionsWrapper};
 use libc::{c_char, size_t};
 use servo_atoms::Atom;
 use servo_url::ServoUrl;

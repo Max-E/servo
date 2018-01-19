@@ -14,8 +14,6 @@
 use dom::bindings::reflector::DomObject;
 use dom::bindings::root::DomRoot;
 use dom::bindings::trace::JSTraceable;
-use js::jsapi::{JSTracer, JS_GetReservedSlot, JS_SetReservedSlot};
-use js::jsval::PrivateValue;
 use libc::c_void;
 use malloc_size_of::{MallocSizeOf, MallocSizeOfOps};
 use nonzero::NonZero;

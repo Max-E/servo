@@ -24,7 +24,6 @@ use html5ever::serialize::TraversalScope;
 use html5ever::serialize::TraversalScope::IncludeNode;
 use html5ever::tokenizer::{Tokenizer as HtmlTokenizer, TokenizerOpts, TokenizerResult};
 use html5ever::tree_builder::{Tracer as HtmlTracer, TreeBuilder, TreeBuilderOpts};
-use js::jsapi::JSTracer;
 use servo_url::ServoUrl;
 use std::io;
 

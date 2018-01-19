@@ -37,7 +37,6 @@ extern crate cookie as cookie_rs;
 extern crate devtools_traits;
 extern crate dom_struct;
 #[macro_use]
-extern crate domobject_derive;
 extern crate encoding_rs;
 extern crate euclid;
 extern crate fnv;
@@ -65,7 +64,6 @@ extern crate mime;
 extern crate mime_guess;
 extern crate mitochondria;
 #[macro_use]
-extern crate mozjs as js;
 extern crate msg;
 extern crate net_traits;
 extern crate nonzero;

@@ -18,15 +18,6 @@ use dom::bindings::utils::AsCCharPtrPtr;
 use dom::globalscope::GlobalScope;
 use dom::promisenativehandler::PromiseNativeHandler;
 use dom_struct::dom_struct;
-use js::conversions::ToJSValConvertible;
-use js::jsapi::{CallOriginalPromiseResolve, CallOriginalPromiseReject};
-use js::jsapi::{JSAutoCompartment, CallArgs, JS_GetFunctionObject, JS_NewFunction};
-use js::jsapi::{JSContext, HandleValue, HandleObject, IsPromiseObject, GetFunctionNativeReserved};
-use js::jsapi::{JS_ClearPendingException, JSObject, AddRawValueRoot, RemoveRawValueRoot, PromiseState};
-use js::jsapi::{MutableHandleObject, NewPromiseObject, ResolvePromise, RejectPromise, GetPromiseState};
-use js::jsapi::{SetFunctionNativeReserved, NewFunctionWithReserved, AddPromiseReactions};
-use js::jsapi::Heap;
-use js::jsval::{JSVal, UndefinedValue, ObjectValue, Int32Value};
 use std::ptr;
 use std::rc::Rc;
 

@@ -15,7 +15,6 @@ opt-level = 3
 # lto = false
 
 [features]
-debugmozjs = ["libservo/debugmozjs"]
 default = ["unstable", "default-except-unstable"]
 default-except-unstable = []
 unstable = ["libservo/unstable"]

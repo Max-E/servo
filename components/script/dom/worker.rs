@@ -21,8 +21,6 @@ use dom::messageevent::MessageEvent;
 use dom::workerglobalscope::prepare_workerscope_init;
 use dom_struct::dom_struct;
 use ipc_channel::ipc;
-use js::jsapi::{HandleValue, JSAutoCompartment, JSContext};
-use js::jsval::UndefinedValue;
 use script_traits::WorkerScriptLoadOrigin;
 use std::cell::Cell;
 use std::sync::{Arc, Mutex};

@@ -10,7 +10,6 @@ use dom::document::Document;
 use dom::htmlscriptelement::HTMLScriptElement;
 use dom::node::Node;
 use dom::servoparser::{ParsingAlgorithm, Sink};
-use js::jsapi::JSTracer;
 use servo_url::ServoUrl;
 use xml5ever::buffer_queue::BufferQueue;
 use xml5ever::tokenizer::XmlTokenizer;

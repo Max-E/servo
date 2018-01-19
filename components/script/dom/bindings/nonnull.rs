@@ -4,7 +4,6 @@
 
 //! A wrapper type for `NonZero<*mut JSObject>`, to enable local trait impls
 
-use js::jsapi::JSObject;
 use nonzero::NonZero;
 
 /// A wrapper type for `NonZero<*mut JSObject>`, to enable local trait impls

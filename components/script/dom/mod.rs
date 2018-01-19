@@ -336,7 +336,6 @@ pub mod htmlparamelement;
 pub mod htmlpreelement;
 pub mod htmlprogresselement;
 pub mod htmlquoteelement;
-pub mod htmlscriptelement;
 pub mod htmlselectelement;
 pub mod htmlsourceelement;
 pub mod htmlspanelement;

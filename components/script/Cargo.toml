@@ -12,7 +12,6 @@ name = "script"
 path = "lib.rs"
 
 [features]
-debugmozjs = ['mozjs/debugmozjs']
 unstable = ["servo_allocator/unstable"]
 unrooted_must_root_lint = ["script_plugins/unrooted_must_root_lint"]
 default = ["unrooted_must_root_lint"]
@@ -64,7 +63,6 @@ metrics = {path = "../metrics"}
 mitochondria = "1.1.2"
 mime = "0.2.1"
 mime_guess = "1.8.0"
-mozjs = { version = "0.1.10", features = ["promises"]}
 msg = {path = "../msg"}
 net_traits = {path = "../net_traits"}
 nonzero = {path = "../nonzero"}

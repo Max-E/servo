@@ -11,8 +11,6 @@ use dom::bindings::reflector::{Reflector, reflect_dom_object};
 use dom::bindings::root::DomRoot;
 use dom::globalscope::GlobalScope;
 use dom_struct::dom_struct;
-use js::jsapi::{JSContext, JSObject};
-use js::jsapi::Type;
 use servo_rand::{ServoRng, Rng};
 
 unsafe_no_jsmanaged_fields!(ServoRng);

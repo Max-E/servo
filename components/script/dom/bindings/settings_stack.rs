@@ -5,11 +5,6 @@
 use dom::bindings::root::{Dom, DomRoot};
 use dom::bindings::trace::JSTraceable;
 use dom::globalscope::GlobalScope;
-use js::jsapi::GetScriptedCallerGlobal;
-use js::jsapi::HideScriptedCaller;
-use js::jsapi::JSTracer;
-use js::jsapi::UnhideScriptedCaller;
-use js::rust::Runtime;
 use std::cell::RefCell;
 use std::thread;
 

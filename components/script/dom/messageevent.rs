@@ -15,8 +15,6 @@ use dom::event::Event;
 use dom::eventtarget::EventTarget;
 use dom::globalscope::GlobalScope;
 use dom_struct::dom_struct;
-use js::jsapi::{HandleValue, Heap, JSContext};
-use js::jsval::JSVal;
 use servo_atoms::Atom;
 
 #[dom_struct]

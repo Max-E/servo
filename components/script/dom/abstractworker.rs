@@ -5,8 +5,6 @@
 use dom::bindings::refcounted::Trusted;
 use dom::bindings::reflector::DomObject;
 use dom::bindings::structuredclone::StructuredCloneData;
-use js::jsapi::{JSRuntime, JS_RequestInterruptCallback};
-use js::rust::Runtime;
 use script_runtime::CommonScriptMsg;
 
 /// Messages used to control the worker event loops

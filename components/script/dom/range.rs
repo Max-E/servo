@@ -27,7 +27,6 @@ use dom::node::{Node, UnbindContext};
 use dom::text::Text;
 use dom::window::Window;
 use dom_struct::dom_struct;
-use js::jsapi::JSTracer;
 use malloc_size_of::{MallocSizeOf, MallocSizeOfOps};
 use std::cell::{Cell, UnsafeCell};
 use std::cmp::{Ord, Ordering, PartialEq, PartialOrd};

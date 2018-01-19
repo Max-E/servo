@@ -11,16 +11,6 @@ use dom::bindings::conversions::root_from_object;
 use dom::bindings::str::USVString;
 use dom::domexception::{DOMErrorName, DOMException};
 use dom::globalscope::GlobalScope;
-use js::error::{throw_range_error, throw_type_error};
-use js::jsapi::HandleObject;
-use js::jsapi::JSContext;
-use js::jsapi::JS_ClearPendingException;
-use js::jsapi::JS_ErrorFromException;
-use js::jsapi::JS_GetPendingException;
-use js::jsapi::JS_IsExceptionPending;
-use js::jsapi::JS_SetPendingException;
-use js::jsapi::MutableHandleValue;
-use js::jsval::UndefinedValue;
 use libc::c_uint;
 use std::slice::from_raw_parts;
 

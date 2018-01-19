@@ -20,7 +20,6 @@ use dom::response::Response;
 use dom::serviceworkerglobalscope::ServiceWorkerGlobalScope;
 use ipc_channel::ipc;
 use ipc_channel::router::ROUTER;
-use js::jsapi::JSAutoCompartment;
 use net_traits::{FetchChannels, FetchResponseListener, NetworkError};
 use net_traits::{FilteredMetadata, FetchMetadata, Metadata};
 use net_traits::CoreResourceMsg::Fetch as NetTraitsFetch;
